@@ -30,12 +30,12 @@ BOARD_READCOUNT                  NUMBER
 		<result property="readCount" column="BOARD_READCOUNT"/>
 	</resultMap>
 	
-	<insert id="boardInsert" parameterType="Board">
-		insert into board (BOARD_NUM, BOARD_TITLE, BOARDWRITER, BOARD_CONTENT)
-		values ((select nvl(max(BOARD_NUM), 0) from BOARD)+1, #P{boardTitle}, #{boardWriter}, #{boardContent})
+	<insert id="insertBoard" parameterType="Board">
+		insert into board (BOARD_NUM, BOARD_TITLE, BOARD_WRITER, BOARD_CONTENT)
+		values ((select nvl(max(BOARD_NUM), 0) from board)+1, #{boardTitle}, #{boardWriter}, #{boardContent})
 	</insert>
 	
-	<update id="boardUpdate" parameterType="Board">
+	<update id="updateBoard" parameterType="Board">
 		UPDATE BOARD 
 		<set>
 		<if test="boardTitle != null">

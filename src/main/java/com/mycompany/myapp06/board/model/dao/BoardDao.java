@@ -17,19 +17,19 @@ public class BoardDao {
 	private SqlSession sqlSession;
 
 	public List<Board> getBoardList() throws Exception {
-		System.out.println("BoardDao getBoardList");
+//		System.out.println("BoardDao getBoardList");
 //		return sqlSession.selectList("BoardNS.baordlistRM");
 //		return sqlSession.selectList("BoardNS.boardlistHM");
 		Map<String, Object> map1 = new HashMap<String, Object>();
 //		map1.put("bt",  "제목");
-//		map1.put("bw",  "sese");
+		map1.put("bw",  "sese");
 //		map1.put("bc",  "내용");
-//		return sqlSession.selectList("BoardNS.searchBoardlist", map1);
-//		return sqlSession.selectList("BoardNS.searchBoardlist2", map1);
+		return sqlSession.selectList("BoardNS.searchBoardList", map1);
+//		return sqlSession.selectList("BoardNS.searchBoardList2", map1);
 
-		map1.put("category", "작성자"); // 작성자 // 내용 // 전체 // 제목
-		map1.put("searchValue", "sese");
-		return sqlSession.selectList("BoardNS.searchBoardList3", map1);
+//		map1.put("category", "작성자"); // 작성자 // 내용 // 전체 // 제목
+//		map1.put("searchValue", "sese");
+//		return sqlSession.selectList("BoardNS.searchBoardList3", map1);
 	}
 
 	public int getListCount() throws Exception {

@@ -7,8 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mycompany.myapp06.board.model.service.BoardService;
@@ -22,7 +26,11 @@ public class BoardController {
 										// interface를 넣어줘도 된다. BoardServiceImpl을 써도 되지만 interface 쓰는게 일반적.
 
 	@RequestMapping(value = "/boardlist", method = RequestMethod.GET)
-	public ModelAndView getBoardList(ModelAndView mv) {
+	public ModelAndView getBoardList(ModelAndView mv
+			, @RequestParam(name="msg") String msg
+			, @RequestParam(name="pagenum") int pagenum
+			// , @RequestParam(name="boardVo") Board bvo
+			) {
 		System.out.println("Controller BoardController getBoardList");
 		Board vo = new Board();
 		String viewpage = "";
@@ -96,7 +104,14 @@ public class BoardController {
 	}
 	@RequestMapping(value = "/boardwrite", method = RequestMethod.POST)
 	// 이렇게 request로 실려온 애들(req) 중에 읽고싶은 모양(bvo)이 있다면 담아줄께. 그러면 스프링일 필드 이름과 똑같이 하면 알아서 담아주는 것이다.  
-	public ModelAndView doWrite(ModelAndView mv, HttpServletRequest req, Board bvo, Member mvo) { // Board, Member에 각각 잘 채워진다. 
+	public ModelAndView doWrite(@RequestParam(name="boardNum") int bnum
+			, ModelAndView mv
+			// , HttpServletRequest req
+			, Board bvo
+			, Member mvo
+			, @RequestParam("report") MultipartFile report // 방법1 : new 방법, 제일 편함
+			, MultipartHttpServletRequest multiReq // 방법2 : 예전방법, 이 안에는 boardNum도 꺼낼 수 있고 그런 식
+			) { // Board, Member에 각각 잘 채워진다. 
 //		request.getParameter("title"); // 예전에 이걸로 꺼냈다. 예전엔 doGet, doPost가 있어서 인자로 있었다. 그래서 request 안에 Tomcat에서 전달 받은 데이터를 다 넣어주는데 이제는 request가 없다. 
 //		Board vo = new Board();
 		// req.getParameter("title"); // 이렇게 하면 Post 방식으로 넘어온 것이 있다.
@@ -109,11 +124,23 @@ public class BoardController {
 		// 날짜는? 날짜도 포멧 꽤 맞춰서 들어오는데 어차피 화면단에서 날짜 입력하는 것은 따로 있기 때문에 vo에서 Date 작성안하는걸 추천한다. String 쓰는걸 추천!!!!!!!!
 		// 그럼 완벽?? Nope.... 숫자에다가 문자까지 해서 오면 ReadCount에 값이 결코 들어갈 수 없따!!!!! 아예 bvo 조차도 안뜬다. 즉, 진입 조차 못한다는 것이다. 그게 맹점이다. 진입안하고 멍하니 멈춰있다. 그래서 우리는 항상 doWrite로 잘 진입했는가를 보고 확인해야함!!
 		// ㄴ이걸 막아줘야한다. jsp안에서 유효성 검사로!!!! boardwrite.jsp로 go!!
+		MultipartFile upfile2 = multiReq.getFile("report"); // 방법2 : 예전방식
+		//--------------------
+		// 예전코드
+		if(bnum==0) {
+			// 새글쓰기
+		} // 아니라면 수정하기
+		//--------------------
+		
 		try {
 			boardService.insertBoard(bvo);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 
+		mv.addObject("msg", "리다이렉트방식으로도 메시지가 전달됩니다."); // ? 뒤에 실려감
+		mv.addObject("pagenum", "1");
+//		mv.addObject("boardVo", String.valueOf(bvo));
+		mv.setViewName("redirect:/boardlist"); // get방식
 		return mv;
 	}
 }

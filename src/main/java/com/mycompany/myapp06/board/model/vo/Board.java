@@ -2,6 +2,8 @@ package com.mycompany.myapp06.board.model.vo;
 
 import java.sql.Date;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class Board {
 	private static final long serialVersionUID = 1111L;
 	private int boardNum;
@@ -17,6 +19,14 @@ public class Board {
 	private int replySeq;
 	private int readCount;
 	
+	private MultipartFile report; // 방법3 : jsp랑 이름 같게!! 근데 잘 안씀
+	
+	public MultipartFile getReport() {
+		return report;
+	}
+	public void setReport(MultipartFile report) {
+		this.report = report;
+	}
 	public Board() {super();}
 	public Board(int boardNum, String boardTitle, String boardWriter, String boardContent, String boardOriginalFileName,
 			String boardRenameFileName, Date date, int level, int ref, int replyRef, int replySeq, int readCount) {
