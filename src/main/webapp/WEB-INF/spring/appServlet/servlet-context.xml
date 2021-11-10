@@ -4,10 +4,12 @@
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
-		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 	
@@ -24,27 +26,63 @@
 	</beans:bean>
 	
 	<context:component-scan base-package="com.mycompany.myapp06" />
-
+	
+	<!-- DB연결  -->
+	<!-- DataSource부분이고 그 안에는 Conn이 존재한다.  -->
 	<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<beans:property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
 		<beans:property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
 		<beans:property name="username" value="scott"/>
 		<beans:property name="password" value="TIGER"/>
 	</beans:bean>
+	<!-- 커넥션 만들 때의 설정 내용(mybatis-config.xml) -->
+	<!-- MyBatis가 세션으로 관리해줄께 conn을 가지고 하는 상태 -->
 	<beans:bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<beans:property name="dataSource" ref="dataSource"/>
 		<beans:property name="configLocation" value="classpath:mybatis-config.xml"/>
 	</beans:bean>
+	
+	<!-- factory 만들어진 이후에 실질적인 conn을 만들자.  -->
 	<beans:bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<!-- <beans:constructor-arg index="0" ref="sqlSessionFactory"/>  -->
+		<!-- argument를 어차피 1개 들고가니 index 적을 필요x -->
 		<beans:constructor-arg ref="sqlSessionFactory"/>
 	</beans:bean>
 	
-	<beans:bean id="testAop" class="com.mycompany.myapp06.common.service.AroundLog"/>
+<!-- 	<beans:bean id="testAop" class="com.mycompany.myapp06.common.service.AroundLog"/>
 	<aop:config>
 		<aop:aspect id="testAspect" ref="testAop">
+			<aop:before method="beforeLog" pointcut="execution(public * com.mycompany.myapp06..*Service.get*(..))"/>
 			<aop:before method="beforeLog" pointcut="execution(public * com.mycompany.myapp06..*Controller.*(..))"/>
-			<aop:after-returning returning="ro" method="afterReturningLog" pointcut="execution(public * com.mycompany.myapp06..*Service.*(..))"/>
+			<aop:after-returning returning="ro" method="afterReturningLog" pointcut="execution(public * com.mycompany.myapp06..*Service.get*(..))"/>
+			<aop:after-returning returning="ro" method="afterReturningDaoLog" pointcut="execution(public * com.mycompany.myapp06..*DAO.*(..))"/>
+			<aop:around method="aroundLog" pointcut="execution(public * com.mycompany.myapp06..*Dao.*(..))"/>
 		</aop:aspect>	
-	</aop:config>
+	</aop:config> -->
 
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+	
+<!-- 	
+	Commit과 Rollback은 Datasource를 가지고 한다. 그래서 conn.commit, conn.rollback을 가지고 움직임.
+	<beans:bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 
+		<beans:property name="dataSource" ref="dataSource"></beans:property>
+	</beans:bean>
+	transaction 등록 
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			get~ 메소드는 select문일 것이기 때문에 read-only를 true로!! 
+			<tx:method name="get*" rollback-for="Exception" read-only="true"/>
+			<tx:method name="insert*" rollback-for="Exception" />
+			<tx:method name="update*" rollback-for="Exception"/>
+			<tx:method name="delete*" rollback-for="Exception"/>
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:pointcut id="commontServiceTxPc" expression="execution(public * com.mycompany.myapp06..*Service.*(..))"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="commontServiceTxPc"/>
+	</aop:config> 
+	-->
+	
+	<tx:annotation-driven/>
+	
 </beans:beans>

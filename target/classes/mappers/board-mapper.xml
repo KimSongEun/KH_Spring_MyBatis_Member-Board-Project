@@ -50,6 +50,10 @@ BOARD_READCOUNT                  NUMBER
 		</set>
 	</update>
 	
+	<select id="listCount" resultType="_int">
+		SELECT COUNT(*) FROM BOARD
+	</select>
+	
 	<select id="boardlist" resultType="Board">
 		select * from board
 	</select>

@@ -2,37 +2,18 @@ package com.mycompany.myapp06.board.model.service;
 
 import java.util.List;
 
-import org.apache.ibatis.session.RowBounds;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.mycompany.myapp06.board.model.dao.BoardDao;
 import com.mycompany.myapp06.board.model.vo.Board;
 
-@Service("boardService")
-public class BoardService {
-	@Autowired
-	private BoardDao boardDao;
-
-	public List<Board> getBoardList(Board vo) {
-//		System.out.println("BoardService getBoardList : " + vo);
-		List<Board> volist = boardDao.getBoardList();
-		System.out.println(volist);
-		return volist;
-	}
-	public List<Board> getBoardListPaging(int offset, int pageSize) {
-		return boardDao.getBoardListPaging(offset,pageSize);
-	}
+public interface BoardService {
 	
-	public int insertBoard(Board b) {
-		return boardDao.insertBoard(b);
-	}
+	public List<Board> getBoardList(Board vo) throws Exception;
+	public List<Board> searchBoardList(Board vo) throws Exception;
 	
-	public Board selectBoard(Board b) {
-		return boardDao.selectBoard(b);
-	}
+	public int insertBoard(Board vo) throws Exception;
 	
-	public int updateBoard(Board b) {
-		return boardDao.updateBoard(b);
-	}
+	public int updateBoard(Board vo) throws Exception;
+	
+	public int deleteBoard(Board vo) throws Exception;
+	public int deleteBoard(int bno) throws Exception;
+	
 }

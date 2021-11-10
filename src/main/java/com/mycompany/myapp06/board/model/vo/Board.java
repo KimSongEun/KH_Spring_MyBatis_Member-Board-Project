@@ -10,7 +10,7 @@ public class Board {
 	private String boardContent;
 	private String boardOriginalFileName;
 	private String boardRenameFileName;
-	private Date date;
+	private Date date; // Date말고 String쓰기!!!!
 	private int level;
 	private int ref;
 	private int replyRef;

@@ -16,7 +16,7 @@ public class BoardDao {
 	@Autowired
 	private SqlSession sqlSession;
 
-	public List<Board> getBoardList() {
+	public List<Board> getBoardList() throws Exception {
 		System.out.println("BoardDao getBoardList");
 //		return sqlSession.selectList("BoardNS.baordlistRM");
 //		return sqlSession.selectList("BoardNS.boardlistHM");
@@ -32,20 +32,24 @@ public class BoardDao {
 		return sqlSession.selectList("BoardNS.searchBoardList3", map1);
 	}
 
-	public List<Board> getBoardListPaging(int offset, int pageSize) {
-		RowBounds rbounds = new RowBounds(offset, pageSize);
-		return sqlSession.selectList("Board.boardlist", null, rbounds);
+	public int getListCount() throws Exception {
+		return sqlSession.selectOne("BoardNS.listCount");
 	}
 	
-	public int insertBoard(Board b) {
+	public List<Board> getBoardListPaging(int offset, int pageSize) throws Exception {
+		RowBounds rbounds = new RowBounds(offset, pageSize);
+		return sqlSession.selectList("BoardNS.boardlist", null, rbounds);
+	}
+	
+	public int insertBoard(Board b) throws Exception {
 		return sqlSession.insert("BoardNS.insertBoard", b);
 	}
 	
-	public Board selectBoard(Board b) {
+	public Board selectBoard(Board b) throws Exception {
 		return sqlSession.selectOne("BoardNS.boarddetail", b); 
 	}
 	
-	public int updateBoard(Board b) {
+	public int updateBoard(Board b) throws Exception {
 		return sqlSession.update("BoardNS.updateBoard", b);
 	}
 	
