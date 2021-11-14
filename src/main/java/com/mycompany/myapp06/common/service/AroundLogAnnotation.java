@@ -21,7 +21,7 @@ public class AroundLogAnnotation {
 	@Pointcut("execution(public * com.mycompany.myapp06..*Service.*(..))")
 	public void commonServicePointcut() { // pointcut 이름 짓기
 	}
-	@Pointcut("execution(public * com.mycompany.myapp06..*Countroller.*(..))")
+	@Pointcut("execution(public * com.mycompany.myapp06..*Controller.*(..))")
 	public void commonControllerPointcut() { // pointcut 이름 짓기
 	}
 	@Pointcut("execution(public * com.mycompany.myapp06..*Dao.*(..))")

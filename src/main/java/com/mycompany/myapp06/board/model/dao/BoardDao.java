@@ -16,7 +16,7 @@ public class BoardDao {
 	@Autowired
 	private SqlSession sqlSession;
 
-	public List<Board> getBoardList() throws Exception {
+	public List<Board> getBoardList()  throws Exception {
 //		System.out.println("BoardDao getBoardList");
 //		return sqlSession.selectList("BoardNS.baordlistRM");
 //		return sqlSession.selectList("BoardNS.boardlistHM");
