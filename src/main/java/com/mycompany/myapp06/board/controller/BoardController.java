@@ -27,8 +27,8 @@ public class BoardController {
 
 	@RequestMapping(value = "/boardlist", method = RequestMethod.GET)
 	public ModelAndView getBoardList(ModelAndView mv
-			, @RequestParam(name="msg") String msg
-			, @RequestParam(name="pagenum") int pagenum
+			//, @RequestParam(name="msg") String msg
+			//, @RequestParam(name="pagenum") int pagenum
 			// , @RequestParam(name="boardVo") Board bvo
 			) {
 		System.out.println("Controller BoardController getBoardList");
